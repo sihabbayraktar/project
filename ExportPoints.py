@@ -53,7 +53,7 @@ if occurences == 1:
 	data.GetPointData().SetActiveScalars("magnitude")
 
 else:
-	points, scalars = readPoints_earthquake_occurences(file=filename, sep="|", quake_number = occurences)
+	points, scalars = readPoints_earthquake_occurences(file=filename, sep="|", depth_scaling=0.01, quake_number = occurences)
 	scalars.SetName("occurences")
 	data = vtk.vtkPolyData()
 	data.SetPoints(points)

@@ -58,26 +58,26 @@ def readPoints_magnitude_scale(file, sep="|", depth_scaling=0.01, time_shift=-14
     return p,s,t,d
 
 
-def readPoints_earthquake_occurences(file, sep="|", quake_number=1):
+def readPoints_earthquake_occurences(file, sep="|", depth_scaling=0.01, quake_number=1):
     df = pd.read_csv(file, sep=sep)
 
     #NECESSARY OPERATIONS FOR FILTERING
     df_copy = df.copy()
-    df_copy=df_copy.rename(columns={"#EventID": "ID"})
-    df_copy=ps.sqldf("select COUNT(ID), Latitude, Longitude, EventLocationName from df_copy group by EventLocationName")
-    df_copy=df_copy.rename(columns={"COUNT(ID)": "Count"})
+    df_copy=df_copy.rename(columns={"#EventID": "ID", "Depth/Km": "Depth"})
+    df_copy=ps.sqldf("select COUNT(ID) as Count, AVG(Depth) as AvgDepth, Latitude, Longitude, EventLocationName from df_copy group by EventLocationName")
 
     df_filter = df_copy[df_copy.Count > quake_number]
 
     df_filter[['Latitude', 'Longitude']]=df_filter[['Latitude', 'Longitude']].clip(lower=0,upper=360)
+    df_filter['NewAvgDepth'] = df_filter['AvgDepth']*depth_scaling
     
 
-    points=df_filter[['Latitude', 'Longitude']].to_numpy()
+    points=df_filter[['Latitude', 'Longitude', 'NewAvgDepth']].to_numpy()
     scalars = df_filter["Count"].to_numpy()
 
     p = vtk.vtkPoints()
-    for i in range(len(points)):
-        p.InsertNextPoint(points[i][0], points[i][1], 0) ## FIX MIGHT BE REQUIRED
+    for i in range(points.shape[0]):
+        p.InsertNextPoint(points[i,:]) 
  
     s = numpy_support.numpy_to_vtk(scalars)
 
