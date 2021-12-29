@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser(description='ExportPoints')
 parser.add_argument('--input_file', type=str, default='data_90days.txt')
 parser.add_argument('--magnitude', type=int, default=0)
 parser.add_argument('--output_file', type=str, default='earthquake.vtk')
-parser.add_argument('--occurences', type=int, default=1)
+parser.add_argument('--occurences', type=int, default=0)
 
 
 # Change working directory to allow script to be run from the ParaView shell
@@ -40,7 +40,7 @@ out_vtk = args.output_file
 occurences = args.occurences
 #points, scalars, tid, depth = readPoints(filename)
 
-if occurences == 1:
+if occurences == 0:
 	points, scalars, tid, depth = readPoints_magnitude_scale(file=filename, sep="|", depth_scaling=0.01, time_shift=-1467247524, magnitude_scaling=magnitude_scaling)
 	scalars.SetName("magnitude")
 	tid.SetName("time")

@@ -66,7 +66,7 @@ def readPoints_earthquake_occurences(file, sep="|", depth_scaling=0.01, quake_nu
     df_copy=df_copy.rename(columns={"#EventID": "ID", "Depth/Km": "Depth"})
     df_copy=ps.sqldf("select COUNT(ID) as Count, AVG(Depth) as AvgDepth, Latitude, Longitude, EventLocationName from df_copy group by EventLocationName")
 
-    df_filter = df_copy[df_copy.Count > quake_number]
+    df_filter = df_copy[df_copy.Count >= quake_number]
 
     df_filter[['Latitude', 'Longitude']]=df_filter[['Latitude', 'Longitude']].clip(lower=0,upper=360)
     df_filter['NewAvgDepth'] = df_filter['AvgDepth']*depth_scaling
