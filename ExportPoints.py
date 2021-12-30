@@ -39,9 +39,11 @@ magnitude_scaling = args.magnitude
 out_vtk = args.output_file
 occurences = args.occurences
 #points, scalars, tid, depth = readPoints(filename)
+#depth_scale = 0.01
+depth_scale = 'log'  # modified here
 
 if occurences == 0:
-	points, scalars, tid, depth = readPoints_magnitude_scale(file=filename, sep="|", depth_scaling=0.01, time_shift=-1467247524, magnitude_scaling=magnitude_scaling)
+	points, scalars, tid, depth = readPoints_magnitude_scale(file=filename, sep="|", depth_scaling=depth_scale, time_shift=-1467247524, magnitude_scaling=magnitude_scaling)
 	scalars.SetName("magnitude")
 	tid.SetName("time")
 	depth.SetName("depth")

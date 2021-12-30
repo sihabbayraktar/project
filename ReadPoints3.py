@@ -40,7 +40,12 @@ def readPoints_magnitude_scale(file, sep="|", depth_scaling=0.01, time_shift=-14
         df = df[df.apply(lambda x: x["Magnitude"] >= magnitude_scaling, axis=1)]
     
     df[['Latitude', 'Longitude']]=df[['Latitude', 'Longitude']].clip(lower=0,upper=360)
-    df['NewDepth']=df['Depth/Km']*depth_scaling
+    if depth_scaling == 'log':
+        print(df['Depth/Km'].iloc[0])  # modified here
+        df['NewDepth']=np.log10(df['Depth/Km'])
+        print(df['NewDepth'].iloc[0])
+    else:
+        df['NewDepth']=df['Depth/Km']*depth_scaling
     df["NewTime"]= pd.to_datetime(df['Time']).values.astype(np.int64) // 10 ** 6
 
     points=df[['Latitude', 'Longitude', 'NewDepth']].to_numpy()
